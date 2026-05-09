@@ -15,30 +15,60 @@ const state = {
   R: null, C: null, E: null,
 };
 
-const PARAMS = {
+const PARAMS_DEFAULTS = {
   alpha: 1, horasDisp: 160, montoMax: 2000000,
   umbralBID: 0.20, umbralPOSTERGAR: 0.08,
-  satFactors: { Baja: 1.00, Media: 0.75, Alta: 0.45, Crítica: 0.20 },
-  margenPorCT: { 1: 1.00, 2: 0.95, 3: 0.85, 4: 0.75, 5: 0.60 },
-  To: { 1: 6, 2: 12, 3: 24, 4: 48, 5: 92 },
+  satBaja: 1.00, satMedia: 0.75, satAlta: 0.45, satCritica: 0.20,
+  mCT1: 1.00, mCT2: 0.95, mCT3: 0.85, mCT4: 0.75, mCT5: 0.60,
+  To1: 6, To2: 12, To3: 24, To4: 48, To5: 92,
   capM: 1.30,
+  pesosH: 25, pesosB: 20, pesosD: 15, pesosG: 12, pesosE: 10, pesosA: 8, pesosC: 7, pesosF: 3,
 };
+
+function loadParams() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ct_vec_params') || 'null');
+    return Object.assign({}, PARAMS_DEFAULTS, saved || {});
+  } catch { return { ...PARAMS_DEFAULTS }; }
+}
+
+let PARAMS_RAW = loadParams();
+
+function buildParams(raw) {
+  return {
+    alpha: raw.alpha, horasDisp: raw.horasDisp, montoMax: raw.montoMax,
+    umbralBID: raw.umbralBID, umbralPOSTERGAR: raw.umbralPOSTERGAR,
+    satFactors: { Baja: raw.satBaja, Media: raw.satMedia, Alta: raw.satAlta, Crítica: raw.satCritica },
+    margenPorCT: { 1: raw.mCT1, 2: raw.mCT2, 3: raw.mCT3, 4: raw.mCT4, 5: raw.mCT5 },
+    To: { 1: raw.To1, 2: raw.To2, 3: raw.To3, 4: raw.To4, 5: raw.To5 },
+    capM: raw.capM,
+    pesos: { H: raw.pesosH, B: raw.pesosB, D: raw.pesosD, G: raw.pesosG, E: raw.pesosE, A: raw.pesosA, C: raw.pesosC, F: raw.pesosF },
+  };
+}
+
+let PARAMS = buildParams(PARAMS_RAW);
 
 // ── Navegación ──
 let currentStep = 1;
 function goTo(step) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  // wizard nav only has steps 1-4
   document.querySelectorAll('.step-btn').forEach((b, i) => {
     b.classList.remove('active', 'done');
-    if (i + 1 < step) b.classList.add('done');
+    if (i + 1 < step && step <= 4) b.classList.add('done');
     if (i + 1 === step) b.classList.add('active');
   });
-  document.getElementById('sec' + step).classList.add('active');
+  const sec = document.getElementById('sec' + step);
+  if (sec) sec.classList.add('active');
   currentStep = step;
   if (step === 4) calcularResultados();
+  if (step === 5) populateParamsForm();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.goTo = goTo;
+
+function goToParams() { goTo(5); }
+window.goToParams = goToParams;
 
 // ── Calcular CT ──
 function calcCT() {
@@ -75,9 +105,9 @@ function calcCT() {
   const Fs = { null: 0, '0': 0, '5': 5, '10': 10, '15': 15 }[state.F_base] ?? 0;
   const Fv = Math.min(Fs, 15) / 15;
 
-  const pesos = { H: 25, B: 20, D: 15, G: 12, E: 10, A: 8, C: 7, F: 3 };
+  const pesos = PARAMS.pesos;
   const scores = { H, B, D, G, E, A, C: Cv, F: Fv };
-  const CT = H * 25 + B * 20 + D * 15 + G * 12 + E * 10 + A * 8 + Cv * 7 + Fv * 3;
+  const CT = H * pesos.H + B * pesos.B + D * pesos.D + G * pesos.G + E * pesos.E + A * pesos.A + Cv * pesos.C + Fv * pesos.F;
 
   return { CT, scores, pesos };
 }
@@ -423,10 +453,78 @@ function resetAll() {
 }
 window.resetAll = resetAll;
 
+// ── Parámetros: populate form ──
+function populateParamsForm() {
+  const fields = Object.keys(PARAMS_DEFAULTS);
+  fields.forEach(k => {
+    const el = document.getElementById('prm-' + k);
+    if (el) el.value = PARAMS_RAW[k];
+  });
+  // Show peso sum
+  updatePesoSum();
+}
+
+function updatePesoSum() {
+  const keys = ['pesosH','pesosB','pesosD','pesosG','pesosE','pesosA','pesosC','pesosF'];
+  const sum = keys.reduce((acc, k) => {
+    const el = document.getElementById('prm-' + k);
+    return acc + (el ? parseFloat(el.value) || 0 : 0);
+  }, 0);
+  const el = document.getElementById('peso-sum');
+  if (el) {
+    el.textContent = sum.toFixed(0);
+    el.style.color = Math.abs(sum - 100) < 0.01 ? 'var(--green)' : 'var(--red)';
+  }
+}
+
+function saveParams() {
+  const fields = Object.keys(PARAMS_DEFAULTS);
+  const newRaw = {};
+  fields.forEach(k => {
+    const el = document.getElementById('prm-' + k);
+    newRaw[k] = el ? parseFloat(el.value) : PARAMS_DEFAULTS[k];
+    if (isNaN(newRaw[k])) newRaw[k] = PARAMS_DEFAULTS[k];
+  });
+  const pesoKeys = ['pesosH','pesosB','pesosD','pesosG','pesosE','pesosA','pesosC','pesosF'];
+  const sum = pesoKeys.reduce((a, k) => a + (newRaw[k] || 0), 0);
+  if (Math.abs(sum - 100) > 0.5) {
+    alert(`Los pesos CT deben sumar 100. Actualmente suman ${sum.toFixed(1)}.`);
+    return;
+  }
+  PARAMS_RAW = newRaw;
+  PARAMS = buildParams(PARAMS_RAW);
+  localStorage.setItem('ct_vec_params', JSON.stringify(PARAMS_RAW));
+  showParamsSaved();
+}
+window.saveParams = saveParams;
+
+function resetParams() {
+  if (!confirm('¿Restaurar todos los parámetros a sus valores predeterminados?')) return;
+  PARAMS_RAW = { ...PARAMS_DEFAULTS };
+  PARAMS = buildParams(PARAMS_RAW);
+  localStorage.removeItem('ct_vec_params');
+  populateParamsForm();
+  showParamsSaved('Parámetros restaurados a valores predeterminados.');
+}
+window.resetParams = resetParams;
+
+function showParamsSaved(msg) {
+  const el = document.getElementById('params-saved-msg');
+  if (!el) return;
+  el.textContent = msg || '✔ Parámetros guardados correctamente.';
+  el.style.display = 'flex';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
+}
+
 // ── Init ──
 document.addEventListener('DOMContentLoaded', () => {
   bindStep1();
   bindStep2();
   bindStep3();
+  // bind peso inputs for live sum
+  ['pesosH','pesosB','pesosD','pesosG','pesosE','pesosA','pesosC','pesosF'].forEach(k => {
+    const el = document.getElementById('prm-' + k);
+    if (el) el.addEventListener('input', updatePesoSum);
+  });
   goTo(1);
 });
