@@ -439,6 +439,7 @@ function bindStep3() {
 
 function resetAll() {
   if (!confirm('¿Reiniciar toda la evaluación?')) return;
+  lastResults = null;
   Object.keys(state).forEach(k => {
     if (typeof state[k] === 'boolean') state[k] = false;
     else state[k] = k.endsWith('_base') || k === 'R' || k === 'C' || k === 'E' ? null : '';
@@ -455,8 +456,7 @@ function resetAll() {
 }
 window.resetAll = resetAll;
 
-// Exporta una fila CSV para consolidar evaluaciones en Excel.
-function exportarCSV() {
+function exportarExcel() {
   if (currentStep !== 4 || !lastResults) calcularResultados();
   const r = lastResults;
   if (!r) {
@@ -475,61 +475,100 @@ function exportarCSV() {
   const fechaLocal = today.toLocaleString('es-CR');
   const paramSource = localStorage.getItem('ct_vec_params') ? 'Personalizados' : 'Predeterminados';
 
-  const row = {
+  const decision = decisionMap[r.decision] || r.decision;
+  const projectSlug = slugify(state.proyecto || 'proyecto');
+  const resumen = [
+    ['Fecha de evaluación', fechaLocal],
+    ['Proyecto', state.proyecto || ''],
+    ['Cliente', state.cliente || ''],
+    ['Decisión VEC', decision],
+    ['Decisión Matriz CT-VEC', r.matrizDecision || ''],
+    ['Conflicto con matriz', r.matrizConflicto ? 'SI' : 'NO'],
+  ];
+  const entrada = [
+    ['Monto del proyecto (USD)', numberOrBlank(state.monto)],
+    ['Margen objetivo (%)', numberOrBlank(state.margenObj)],
+    ['Margen esperado (%)', numberOrBlank(state.margenEsp)],
+    ['Horas estimadas', numberOrBlank(state.horas)],
+    ['Saturación', state.saturacion || ''],
+    ['Modo capacidad', r.modo],
+  ];
+  const indicadores = [
+    ['CT continuo', fixedOrBlank(r.CT, 2)],
+    ['CT discreto', r.ctD],
+    ['Tiempo objetivo (h)', r.To],
+    ['Probabilidad P', fixedOrBlank(r.P, 4)],
+    ['Impacto I', fixedOrBlank(r.I, 4)],
+    ['Margen M', fixedOrBlank(r.M, 4)],
+    ['Factor capacidad F_C', fixedOrBlank(r.FC, 4)],
+    ['VEC', fixedOrBlank(r.VEC, 4)],
+    ['IP', fixedOrBlank(r.IP, 6)],
+  ];
+  const factoresCT = [
+    ['H - Urgencia', fixedOrBlank(r.scores.H * 100, 1), r.pesos.H],
+    ['B - Alcance', fixedOrBlank(r.scores.B * 100, 1), r.pesos.B],
+    ['D - Categorías de objetos', fixedOrBlank(r.scores.D * 100, 1), r.pesos.D],
+    ['G - Experiencia / Referencias', fixedOrBlank(r.scores.G * 100, 1), r.pesos.G],
+    ['E - Subcontratos', fixedOrBlank(r.scores.E * 100, 1), r.pesos.E],
+    ['A - Disciplinas', fixedOrBlank(r.scores.A * 100, 1), r.pesos.A],
+    ['C - Ingeniería / Validación', fixedOrBlank(r.scores.C * 100, 1), r.pesos.C],
+    ['F - Permisos / Normativa', fixedOrBlank(r.scores.F * 100, 1), r.pesos.F],
+  ];
+  const probabilidad = [
+    ['Relación cliente', state.R || ''],
+    ['Competencia', state.C || ''],
+    ['Experiencia interna', state.E || ''],
+  ];
+  const parametros = [
+    ['Fuente de parámetros', paramSource],
+    ['Alpha', PARAMS_RAW.alpha],
+    ['Horas disponibles', PARAMS_RAW.horasDisp],
+    ['Monto máximo USD', PARAMS_RAW.montoMax],
+    ['Umbral BID', PARAMS_RAW.umbralBID],
+    ['Umbral POSTERGAR', PARAMS_RAW.umbralPOSTERGAR],
+  ];
+  const comparativo = [{
     fecha_evaluacion: fechaLocal,
     proyecto: state.proyecto || '',
     cliente: state.cliente || '',
+    decision_vec: decision,
+    decision_matriz_ct_vec: r.matrizDecision || '',
+    conflicto_matriz: r.matrizConflicto ? 'SI' : 'NO',
     monto_usd: numberOrBlank(state.monto),
     margen_objetivo_pct: numberOrBlank(state.margenObj),
     margen_esperado_pct: numberOrBlank(state.margenEsp),
     horas_estimadas: numberOrBlank(state.horas),
     saturacion: state.saturacion || '',
-    modo_capacidad: r.modo,
-    decision_vec: decisionMap[r.decision] || r.decision,
-    decision_matriz_ct_vec: r.matrizDecision || '',
-    conflicto_matriz: r.matrizConflicto ? 'SI' : 'NO',
     ct_continuo: fixedOrBlank(r.CT, 2),
     ct_discreto: r.ctD,
-    tiempo_objetivo_horas: r.To,
-    probabilidad_p: fixedOrBlank(r.P, 4),
-    impacto_i: fixedOrBlank(r.I, 4),
-    margen_m: fixedOrBlank(r.M, 4),
-    factor_capacidad_fc: fixedOrBlank(r.FC, 4),
     vec: fixedOrBlank(r.VEC, 4),
     ip: fixedOrBlank(r.IP, 6),
-    prob_relacion_cliente: state.R || '',
-    prob_competencia: state.C || '',
-    prob_experiencia: state.E || '',
-    ct_H_urgencia_pct: fixedOrBlank(r.scores.H * 100, 1),
-    ct_B_alcance_pct: fixedOrBlank(r.scores.B * 100, 1),
-    ct_D_categorias_pct: fixedOrBlank(r.scores.D * 100, 1),
-    ct_G_referencias_pct: fixedOrBlank(r.scores.G * 100, 1),
-    ct_E_subcontratos_pct: fixedOrBlank(r.scores.E * 100, 1),
-    ct_A_disciplinas_pct: fixedOrBlank(r.scores.A * 100, 1),
-    ct_C_ingenieria_pct: fixedOrBlank(r.scores.C * 100, 1),
-    ct_F_permisos_pct: fixedOrBlank(r.scores.F * 100, 1),
-    parametros: paramSource,
-    param_alpha: PARAMS_RAW.alpha,
-    param_horas_disponibles: PARAMS_RAW.horasDisp,
-    param_monto_max_usd: PARAMS_RAW.montoMax,
-    param_umbral_bid: PARAMS_RAW.umbralBID,
-    param_umbral_postergar: PARAMS_RAW.umbralPOSTERGAR,
-  };
+  }];
 
-  const headers = Object.keys(row);
-  const csv = '\uFEFF' + headers.join(',') + '\r\n' + headers.map(h => csvCell(row[h])).join(',');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const workbookXml = buildExcelWorkbookXml({
+    reportTitle: 'Reporte de Evaluación CT-VEC-IP',
+    reportSections: [
+      { title: 'Resumen ejecutivo', headers: ['Campo', 'Valor'], rows: resumen },
+      { title: 'Datos de entrada', headers: ['Campo', 'Valor'], rows: entrada },
+      { title: 'Indicadores calculados', headers: ['Indicador', 'Valor'], rows: indicadores },
+      { title: 'Probabilidad de adjudicación', headers: ['Variable', 'Selección'], rows: probabilidad },
+      { title: 'Complejidad técnica por bloque', headers: ['Bloque', 'Resultado (%)', 'Peso'], rows: factoresCT },
+      { title: 'Parámetros principales usados', headers: ['Parámetro', 'Valor'], rows: parametros },
+    ],
+    comparisonHeaders: Object.keys(comparativo[0]),
+    comparisonRows: [Object.values(comparativo[0])],
+  });
+  const blob = new Blob(['\uFEFF' + workbookXml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
-  const projectSlug = slugify(state.proyecto || 'proyecto');
   link.href = url;
-  link.download = `evaluacion_CT_VEC_IP_${projectSlug}_${fechaISO}.csv`;
+  link.download = `reporte_CT_VEC_IP_${projectSlug}_${fechaISO}.xls`;
   document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
 }
-window.exportarCSV = exportarCSV;
+window.exportarExcel = exportarExcel;
 
 function fixedOrBlank(value, digits) {
   return value === null || value === undefined || Number.isNaN(value) ? '' : Number(value).toFixed(digits);
@@ -540,11 +579,6 @@ function numberOrBlank(value) {
   return value === '' || Number.isNaN(n) ? '' : n;
 }
 
-function csvCell(value) {
-  const text = String(value ?? '');
-  return `"${text.replace(/"/g, '""')}"`;
-}
-
 function slugify(value) {
   return value
     .normalize('NFD')
@@ -553,6 +587,98 @@ function slugify(value) {
     .replace(/^_+|_+$/g, '')
     .slice(0, 48)
     .toLowerCase() || 'proyecto';
+}
+
+function buildExcelWorkbookXml({ reportTitle, reportSections, comparisonHeaders, comparisonRows }) {
+  const reportRows = [
+    xmlRow([xmlCell(reportTitle, 'Title', 'String', 1)]),
+    xmlRow([xmlCell('', 'Blank')]),
+    ...reportSections.flatMap(section => [
+      xmlRow([xmlCell(section.title, 'Section', 'String', Math.max(section.headers.length - 1, 0))]),
+      xmlRow(section.headers.map(h => xmlCell(h, 'Header'))),
+      ...section.rows.map(row => xmlRow(row.map(v => xmlCell(v, 'Cell')))),
+      xmlRow([xmlCell('', 'Blank')]),
+    ]),
+  ].join('');
+  const comparisonRowsXml = [
+    xmlRow(comparisonHeaders.map(h => xmlCell(h, 'Header'))),
+    ...comparisonRows.map(row => xmlRow(row.map(v => xmlCell(v, 'Cell')))),
+  ].join('');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Font ss:FontName="Calibri" ss:Size="11"/>
+   <Alignment ss:Vertical="Top"/>
+  </Style>
+  <Style ss:ID="Title">
+   <Font ss:FontName="Calibri" ss:Size="16" ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#17365D" ss:Pattern="Solid"/>
+   <Alignment ss:Vertical="Center"/>
+  </Style>
+  <Style ss:ID="Section">
+   <Font ss:FontName="Calibri" ss:Size="12" ss:Bold="1" ss:Color="#17365D"/>
+   <Interior ss:Color="#D9EAF7" ss:Pattern="Solid"/>
+  </Style>
+  <Style ss:ID="Header">
+   <Font ss:FontName="Calibri" ss:Bold="1" ss:Color="#FFFFFF"/>
+   <Interior ss:Color="#1F4E78" ss:Pattern="Solid"/>
+   <Borders>${xmlBorders()}</Borders>
+  </Style>
+  <Style ss:ID="Cell">
+   <Borders>${xmlBorders()}</Borders>
+   <Alignment ss:Vertical="Top" ss:WrapText="1"/>
+  </Style>
+  <Style ss:ID="Blank"/>
+ </Styles>
+ <Worksheet ss:Name="Reporte">
+  <Table>
+   <Column ss:Width="210"/>
+   <Column ss:Width="230"/>
+   ${reportRows}
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/><FrozenNoSplit/><SplitHorizontal>3</SplitHorizontal><TopRowBottomPane>3</TopRowBottomPane>
+  </WorksheetOptions>
+ </Worksheet>
+ <Worksheet ss:Name="Comparativo">
+  <Table>
+   ${comparisonHeaders.map(() => '<Column ss:Width="135"/>').join('')}
+   ${comparisonRowsXml}
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>`;
+}
+
+function xmlRow(cells) {
+  return `<Row>${cells.join('')}</Row>`;
+}
+
+function xmlCell(value, style = 'Cell', type = null, mergeAcross = 0) {
+  const dataType = type || (typeof value === 'number' && Number.isFinite(value) ? 'Number' : 'String');
+  const merge = mergeAcross > 0 ? ` ss:MergeAcross="${mergeAcross}"` : '';
+  return `<Cell ss:StyleID="${style}"${merge}><Data ss:Type="${dataType}">${xmlEscape(value)}</Data></Cell>`;
+}
+
+function xmlBorders() {
+  return '<Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#D9E2F3"/>';
+}
+
+function xmlEscape(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ── Parámetros: populate form ──
