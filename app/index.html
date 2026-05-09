@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CT–VEC–IP | Evaluador de Oportunidades de Cotización</title>
+<meta name="description" content="Herramienta web para evaluar oportunidades de cotización mediante los modelos CT, VEC e IP."/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header>
+  <span class="logo-icon">⚡</span>
+  <div>
+    <div class="logo-text">CT–VEC–IP</div>
+    <div class="logo-sub">Evaluador de Oportunidades de Cotización</div>
+  </div>
+  <div class="spacer"></div>
+  <span class="header-badge">HERRAMIENTA ANALÍTICA</span>
+  <button class="btn btn-reset" onclick="resetAll()" style="margin-left:1rem">↺ Reiniciar</button>
+</header>
+
+<!-- ═══ WIZARD NAV ═══ -->
+<nav class="wizard-nav" id="wizard-nav">
+  <button class="step-btn active" onclick="goTo(1)">
+    <div class="step-num">1</div>
+    <div class="step-label">Datos del Proyecto</div>
+  </button>
+  <button class="step-btn" onclick="goTo(2)">
+    <div class="step-num">2</div>
+    <div class="step-label">Complejidad Técnica</div>
+  </button>
+  <button class="step-btn" onclick="goTo(3)">
+    <div class="step-num">3</div>
+    <div class="step-label">Probabilidad</div>
+  </button>
+  <button class="step-btn" onclick="goTo(4)">
+    <div class="step-num">4</div>
+    <div class="step-label">Resultados</div>
+  </button>
+</nav>
+
+<main class="main-container">
+
+<!-- ════════════════════════════════════════════
+     PASO 1 — DATOS DEL PROYECTO
+════════════════════════════════════════════ -->
+<section class="section active" id="sec1">
+  <div class="section-title">📋 Datos del Proyecto</div>
+  <p class="section-desc">Complete la información general y económica del proyecto a evaluar.</p>
+
+  <!-- Identificación -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🏗</span>
+      <span class="card-title">Identificación</span>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">Nombre del Proyecto</div>
+        <input type="text" id="inp-proyecto" placeholder="Ej: Ampliación eléctrica en planta..."/>
+      </div>
+      <div class="field">
+        <div class="field-label">Cliente</div>
+        <input type="text" id="inp-cliente" placeholder="Ej: Cliente industrial recurrente"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- Datos económicos -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">💰</span>
+      <span class="card-title">Datos Económicos</span>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">
+          Monto del Proyecto (USD)
+          <span class="badge-prio">Requerido</span>
+        </div>
+        <input type="number" id="inp-monto" placeholder="Ej: 1100000" min="0"/>
+        <div class="field-hint">Ingrese sin separador de miles.</div>
+      </div>
+      <div class="field">
+        <div class="field-label">
+          Margen Objetivo (%)
+          <span class="badge-prio">Requerido</span>
+        </div>
+        <input type="number" id="inp-margen-obj" placeholder="Ej: 15" min="0" max="100"/>
+      </div>
+    </div>
+    <div class="field">
+      <div class="field-label">
+        Margen Esperado (%)
+        <span class="badge-opt">Opcional</span>
+      </div>
+      <input type="number" id="inp-margen-esp" placeholder="Ej: 14 — Si está vacío, se usa factor estimado por CT" min="0" max="100"/>
+      <div class="field-hint">Si está vacío, el sistema estima el margen según la complejidad técnica del proyecto.</div>
+    </div>
+  </div>
+
+  <!-- Capacidad -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⚙</span>
+      <span class="card-title">Capacidad del Departamento</span>
+    </div>
+    <p class="field-hint" style="margin-bottom:1rem">Complete al menos uno de los dos campos. Las horas estimadas tienen prioridad sobre la saturación.</p>
+    <div class="capacity-section">
+      <!-- Horas -->
+      <div class="capacity-card" id="cap-horas">
+        <div class="cap-label">⏱ Modo Cuantitativo</div>
+        <div class="field">
+          <div class="field-label">
+            Horas Estimadas para Cotizar
+            <span class="badge-prio">Prioridad</span>
+          </div>
+          <input type="number" id="inp-horas" placeholder="Ej: 30" min="0"/>
+        </div>
+        <div class="field-hint">Si se ingresan horas, el nivel de saturación se ignorará automáticamente.</div>
+      </div>
+      <!-- Saturación -->
+      <div class="capacity-card" id="cap-sat">
+        <div class="cap-label">📊 Modo Cualitativo</div>
+        <div class="field" id="sat-wrap">
+          <div class="field-label">
+            Nivel de Saturación
+            <span class="badge-opt">Respaldo</span>
+          </div>
+          <select id="inp-sat">
+            <option value="">— Seleccione —</option>
+            <option value="Baja">🟢 Baja — F_C = 1.00</option>
+            <option value="Media">🟡 Media — F_C = 0.75</option>
+            <option value="Alta">🟠 Alta — F_C = 0.45</option>
+            <option value="Crítica">🔴 Crítica — F_C = 0.20</option>
+          </select>
+          <div id="sat-notice" class="sat-override-notice">
+            ⚡ Las horas estimadas tienen prioridad. La saturación será ignorada en el cálculo.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <span></span>
+    <button class="btn btn-primary" onclick="goTo(2)">Siguiente: Complejidad Técnica →</button>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     PASO 2 — COMPLEJIDAD TÉCNICA
+════════════════════════════════════════════ -->
+<section class="section" id="sec2">
+  <div class="section-title">🧮 Complejidad Técnica (CT)</div>
+  <p class="section-desc">Seleccione un criterio base por bloque (exclusivo) y marque los factores adicionales aplicables.</p>
+
+  <!-- H: Urgencia -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⏰</span>
+      <span class="card-title">H — Urgencia</span>
+      <span class="card-weight">Peso 25%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="H-std">Plazo estándar</button>
+      <button class="opt-btn" id="H-red">Plazo reducido negociable</button>
+      <button class="opt-btn" id="H-crit">Plazo reducido NO negociable</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="H-paralelo">
+      <div class="check-box"></div>
+      <span class="check-label">Trabajo en paralelo requerido</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+    <div class="check-item" id="H-extra">
+      <div class="check-box"></div>
+      <span class="check-label">Requiere horas extra</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+    <div class="check-item" id="H-abandono">
+      <div class="check-box"></div>
+      <span class="check-label">Implica abandono de otros proyectos</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- B: Alcance -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📐</span>
+      <span class="card-title">B — Alcance</span>
+      <span class="card-weight">Peso 20%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="B-claro">Alcance claro y definido</button>
+      <button class="opt-btn" id="B-parcial">Alcance parcialmente definido</button>
+      <button class="opt-btn" id="B-ambiguo">Alcance pobre / ambiguo</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="B-futuro">
+      <div class="check-box"></div>
+      <span class="check-label">Dependiente de decisiones futuras</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- D: Categorías de objetos -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🗂</span>
+      <span class="card-title">D — Categorías de Objetos</span>
+      <span class="card-weight">Peso 15%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="D-pocas">Pocas categorías</button>
+      <button class="opt-btn" id="D-varias">Varias categorías</button>
+      <button class="opt-btn" id="D-muchas">Muchas categorías</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="D-dep">
+      <div class="check-box"></div>
+      <span class="check-label">Cantidades dependientes o estimadas</span>
+      <span class="check-pts">+5 pts</span>
+    </div>
+  </div>
+
+  <!-- G: Experiencia -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📚</span>
+      <span class="card-title">G — Experiencia / Referencias</span>
+      <span class="card-weight">Peso 12%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="G-claras">Referencias claras y recientes</button>
+      <button class="opt-btn" id="G-parciales">Referencias parciales</button>
+      <button class="opt-btn" id="G-sin">Sin referencias</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="G-dispersa">
+      <div class="check-box"></div>
+      <span class="check-label">Información dispersa o no organizada</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- E: Subcontratos -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🤝</span>
+      <span class="card-title">E — Subcontratos</span>
+      <span class="card-weight">Peso 10%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="E-sin">Sin subcontratos</button>
+      <button class="opt-btn" id="E-uno">1 o 2 subcontratos</button>
+      <button class="opt-btn" id="E-varios">Varios subcontratos</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="E-multi">
+      <div class="check-box"></div>
+      <span class="check-label">Múltiples cotizaciones externas requeridas</span>
+      <span class="check-pts">+5 pts</span>
+    </div>
+    <div class="check-item" id="E-volatil">
+      <div class="check-box"></div>
+      <span class="check-label">Alta volatilidad de precios</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- A: Disciplinas -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🔧</span>
+      <span class="card-title">A — Disciplinas Involucradas</span>
+      <span class="card-weight">Peso 8%</span>
+    </div>
+    <p class="field-hint" style="margin-bottom:0.6rem">Acumulativo — seleccione todas las disciplinas aplicables. La interacción entre disciplinas se calcula automáticamente.</p>
+    <div class="check-item" id="A-electro">
+      <div class="check-box"></div>
+      <span class="check-label">Electromecánico</span>
+      <span class="check-pts">+35 pts</span>
+    </div>
+    <div class="check-item" id="A-civil">
+      <div class="check-box"></div>
+      <span class="check-label">Civil</span>
+      <span class="check-pts">+35 pts</span>
+    </div>
+    <div class="check-item" id="A-servicios">
+      <div class="check-box"></div>
+      <span class="check-label">Servicios</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+    <div class="check-item" id="A-criticos">
+      <div class="check-box"></div>
+      <span class="check-label">Sistemas Críticos</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+    <div class="check-item" id="A-bms">
+      <div class="check-box"></div>
+      <span class="check-label">BMS / Automatización</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+    <div class="field-hint" style="margin-top:0.5rem">+ Interacción automática: 2 disc.=+5, 3=+10, 4=+15, 5=+20 pts</div>
+  </div>
+
+  <!-- C: Ingeniería -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📏</span>
+      <span class="card-title">C — Ingeniería / Validación</span>
+      <span class="card-weight">Peso 7%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="C-sin">Sin ingeniería / solución estándar</button>
+      <button class="opt-btn" id="C-basica">Ingeniería básica</button>
+      <button class="opt-btn" id="C-detallada">Ingeniería detallada</button>
+      <button class="opt-btn" id="C-adhoc">Diseño ad hoc</button>
+    </div>
+    <div class="ct-group-label">Factores adicionales</div>
+    <div class="check-item" id="C-validacion">
+      <div class="check-box"></div>
+      <span class="check-label">Validación interna requerida</span>
+      <span class="check-pts">+10 pts</span>
+    </div>
+  </div>
+
+  <!-- F: Permisos -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📋</span>
+      <span class="card-title">F — Permisos / Normativa</span>
+      <span class="card-weight">Peso 3%</span>
+    </div>
+    <div class="ct-group-label">Base (seleccione uno)</div>
+    <div class="opt-exclusive">
+      <button class="opt-btn" id="F-sin">Sin permisos</button>
+      <button class="opt-btn" id="F-std">Permisos estándar</button>
+      <button class="opt-btn" id="F-esp">Permisos especiales</button>
+      <button class="opt-btn" id="F-compleja">Normativa compleja / múltiples autoridades</button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(1)">← Anterior</button>
+    <button class="btn btn-primary" onclick="goTo(3)">Siguiente: Probabilidad →</button>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     PASO 3 — PROBABILIDAD
+════════════════════════════════════════════ -->
+<section class="section" id="sec3">
+  <div class="section-title">🎯 Probabilidad de Adjudicación (P)</div>
+  <p class="section-desc">Seleccione la opción que mejor describe cada variable. P = R × C × E</p>
+
+  <!-- R: Relación cliente -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🤲</span>
+      <span class="card-title">R — Relación con el Cliente</span>
+    </div>
+    <div class="picker-grid">
+      <button class="pick-card" id="pick-R-Excelente">Excelente<span class="pick-val">R = 1.00</span></button>
+      <button class="pick-card" id="pick-R-Buena">Buena<span class="pick-val">R = 0.85</span></button>
+      <button class="pick-card" id="pick-R-Intermedia">Intermedia<span class="pick-val">R = 0.65</span></button>
+      <button class="pick-card" id="pick-R-Desconocido">Desconocido<span class="pick-val">R = 0.50</span></button>
+      <button class="pick-card" id="pick-R-Mala">Mala<span class="pick-val">R = 0.30</span></button>
+    </div>
+  </div>
+
+  <!-- C: Competencia -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⚔</span>
+      <span class="card-title">C — Tipo de Competencia</span>
+    </div>
+    <div class="picker-grid">
+      <button class="pick-card" id="pick-Comp-Único_oferente">Único oferente<span class="pick-val">C = 1.00</span></button>
+      <button class="pick-card" id="pick-Comp-Licitación_privada">Licitación privada<span class="pick-val">C = 0.60</span></button>
+      <button class="pick-card" id="pick-Comp-Licitación_pública">Licitación pública<span class="pick-val">C = 0.35</span></button>
+      <button class="pick-card" id="pick-Comp-Estudio_de_mercado">Estudio de mercado<span class="pick-val">C = 0.20</span></button>
+    </div>
+  </div>
+
+  <!-- E: Experiencia -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🏆</span>
+      <span class="card-title">E — Experiencia Interna</span>
+    </div>
+    <div class="picker-grid">
+      <button class="pick-card" id="pick-Exp-Alta">Alta<span class="pick-val">E = 1.00</span></button>
+      <button class="pick-card" id="pick-Exp-Media">Media<span class="pick-val">E = 0.75</span></button>
+      <button class="pick-card" id="pick-Exp-Baja">Baja<span class="pick-val">E = 0.50</span></button>
+      <button class="pick-card" id="pick-Exp-Nula">Nula<span class="pick-val">E = 0.30</span></button>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(2)">← Anterior</button>
+    <button class="btn btn-primary" onclick="goTo(4)">Ver Resultados →</button>
+  </div>
+</section>
+
+
+<!-- ════════════════════════════════════════════
+     PASO 4 — RESULTADOS
+════════════════════════════════════════════ -->
+<section class="section" id="sec4">
+  <div class="section-title">📊 Dashboard de Resultados</div>
+  <p class="section-desc">Evaluación completa del proyecto basada en los modelos CT–VEC–IP.</p>
+
+  <!-- Alerta datos faltantes -->
+  <div class="alert-missing" id="alert-missing">⚠ Faltan datos</div>
+
+  <!-- Decisión Principal -->
+  <div class="decision-card nodata" id="decision-card">
+    <div class="decision-icon" id="decision-icon">❓</div>
+    <div class="decision-label">Decisión Recomendada</div>
+    <div class="decision-text" id="decision-text">SIN DATOS</div>
+    <div class="decision-desc" id="decision-desc">Complete todos los parámetros para obtener una decisión.</div>
+    <div id="res-mode" class="mode-badge miss" style="margin:0.8rem auto 0; width:fit-content">⚠ Falta dato</div>
+  </div>
+
+  <!-- Matriz CT×VEC -->
+  <div class="matrix-alert error" id="matriz-alert">— Complete los datos para evaluar la Matriz CT×VEC.</div>
+
+  <!-- Grid métricas principales -->
+  <div class="results-grid">
+    <div class="metric-card">
+      <div class="metric-label">VEC</div>
+      <div class="metric-value" id="res-vec">—</div>
+      <div class="metric-sub">Valor Esperado Cotizar</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">IP</div>
+      <div class="metric-value" id="res-ip">—</div>
+      <div class="metric-sub">Índice de Prioridad</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">CT Discreto</div>
+      <div class="metric-value" id="res-ct-disc">—</div>
+      <div class="metric-sub">Escala 1 – 5</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Tₒ</div>
+      <div class="metric-value" id="res-to">—</div>
+      <div class="metric-sub">Tiempo objetivo</div>
+    </div>
+  </div>
+
+  <!-- Grid factores -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">🔢</span>
+      <span class="card-title">Factores del Modelo</span>
+    </div>
+    <div class="results-grid" style="margin-bottom:0">
+      <div class="metric-card">
+        <div class="metric-label">P</div>
+        <div class="metric-value small" id="res-p">—</div>
+        <div class="metric-sub">Probabilidad adjudicación</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">I</div>
+        <div class="metric-value small" id="res-i">—</div>
+        <div class="metric-sub">Impacto económico</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">M</div>
+        <div class="metric-value small" id="res-m">—</div>
+        <div class="metric-sub">Margen normalizado</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">F_C</div>
+        <div class="metric-value small" id="res-fc">—</div>
+        <div class="metric-sub">Factor capacidad</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gauge CT -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📈</span>
+      <span class="card-title">CT Continuo — <span id="res-ct-cont">—</span> / 100</span>
+    </div>
+    <div class="gauge-wrap">
+      <svg id="gauge-svg" class="gauge-svg" width="180" height="110" viewBox="0 0 180 110"></svg>
+      <div class="gauge-label">0 = Simple · 100 = Muy complejo</div>
+    </div>
+    <hr class="divider"/>
+    <div class="ct-group-label" style="margin-bottom:0.6rem">Contribución por bloque</div>
+    <div class="ct-progress-wrap">
+      <div class="ct-bar-row"><span class="ct-bar-label">H</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-H" style="width:0%"></div></div><span class="ct-bar-score" id="score-H">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">B</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-B" style="width:0%"></div></div><span class="ct-bar-score" id="score-B">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">D</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-D" style="width:0%"></div></div><span class="ct-bar-score" id="score-D">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">G</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-G" style="width:0%"></div></div><span class="ct-bar-score" id="score-G">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">E</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-E" style="width:0%"></div></div><span class="ct-bar-score" id="score-E">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">A</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-A" style="width:0%"></div></div><span class="ct-bar-score" id="score-A">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">C</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-C" style="width:0%"></div></div><span class="ct-bar-score" id="score-C">0%</span></div>
+      <div class="ct-bar-row"><span class="ct-bar-label">F</span><div class="ct-bar-bg"><div class="ct-bar-fill" id="bar-F" style="width:0%"></div></div><span class="ct-bar-score" id="score-F">0%</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="goTo(3)">← Anterior</button>
+    <div style="display:flex;gap:0.8rem">
+      <button class="btn btn-print" onclick="window.print()">🖨 Imprimir</button>
+      <button class="btn btn-reset" onclick="resetAll()">↺ Nueva Evaluación</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

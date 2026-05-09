@@ -1,0 +1,107 @@
+<mxfile host="Electron" agent="Codex">
+  <diagram name="Mapa conceptual CT-VEC-IP" id="ct-vec-ip-map">
+    <mxGraphModel dx="4298" dy="2453" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F6F1E7;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="1430" width="1810" x="-10" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Georgia;fontSize=42;fontStyle=1;fontColor=#15202B;" value="Proyecto CT-VEC-IP" vertex="1">
+          <mxGeometry height="60" width="840" x="10" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="subtitle" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontFamily=Arial;fontSize=22;fontColor=#61707C;" value="Herramienta para evaluar, decidir&amp;nbsp;y&amp;nbsp;priorizar cotizaciones de ingeniería" vertex="1">
+          <mxGeometry height="34" width="900" x="10" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="8JGPw39PC9fJ3PLac3gb-9" edge="1" parent="1" source="core" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#C9862D;strokeWidth=4;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=block;" target="ip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="core" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111B24;strokeColor=#111B24;fontColor=#FFFAF2;fontFamily=Arial;fontSize=24;align=center;verticalAlign=middle;spacing=20;" value="&lt;font style=&quot;font-size: 52px;&quot;&gt;&lt;b&gt;CT-VEC-IP&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;b&gt;Modelo de decisión para cotizaciones&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Complejidad técnica + valor esperado + tiempo objetivo&lt;/font&gt;" vertex="1">
+          <mxGeometry height="170" width="490" x="480" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="q1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0F2;strokeColor=#B8CCD2;fontColor=#15202B;fontFamily=Arial;fontSize=24;align=left;verticalAlign=middle;spacingLeft=28;" value="&lt;b&gt;1. Complejidad&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;¿Qué tan complejo es cotizar?&lt;/font&gt;" vertex="1">
+          <mxGeometry height="118" width="350" x="10" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="q2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DDECE4;strokeColor=#BFD7C9;fontColor=#15202B;fontFamily=Arial;fontSize=24;align=left;verticalAlign=middle;spacingLeft=28;" value="&lt;b&gt;2. Conveniencia&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;¿Conviene cotizar por valor esperado?&lt;/font&gt;" vertex="1">
+          <mxGeometry height="118" width="350" x="10" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="q3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3E7D5;strokeColor=#DFC39E;fontColor=#15202B;fontFamily=Arial;fontSize=24;align=left;verticalAlign=middle;spacingLeft=28;" value="&lt;b&gt;3. Prioridad&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;¿Cuál oportunidad debe cotizarse primero?&lt;/font&gt;" vertex="1">
+          <mxGeometry height="118" width="350" x="10" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="e-q1-core" edge="1" parent="1" source="q1" style="endArrow=block;html=1;rounded=0;strokeColor=#9B8F80;strokeWidth=3;" target="core" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-q2-core" edge="1" parent="1" source="q2" style="endArrow=block;html=1;rounded=0;strokeColor=#9B8F80;strokeWidth=3;" target="core" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-q3-core" edge="1" parent="1" source="q3" style="endArrow=block;html=1;rounded=0;strokeColor=#9B8F80;strokeWidth=3;exitX=1;exitY=0;exitDx=0;exitDy=0;" target="core" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="input" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF8F1;strokeColor=#D9D0C3;fontColor=#15202B;fontFamily=Arial;fontSize=22;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Entradas del proyecto&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Proyecto, cliente y monto&lt;br&gt;• Margen objetivo / esperado&lt;br&gt;• Horas estimadas o saturación&lt;br&gt;&lt;br&gt;&lt;font color=&quot;#61707C&quot;&gt;Hoja: INPUT_PROYECTO&lt;/font&gt;" vertex="1">
+          <mxGeometry height="220" width="390" x="10" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="prob" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF8F1;strokeColor=#D9D0C3;fontColor=#15202B;fontFamily=Arial;fontSize=22;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Probabilidad de adjudicación&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;span style=&quot;font-family: Consolas; font-size: 24px;&quot;&gt;P = R × C × E&lt;/span&gt;&lt;br&gt;&lt;br&gt;R = relación cliente&lt;br&gt;C = competencia&lt;br&gt;E = experiencia interna" vertex="1">
+          <mxGeometry height="260" width="290" x="1450" y="167" as="geometry" />
+        </mxCell>
+        <mxCell id="ct" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF8F1;strokeColor=#D9D0C3;fontColor=#15202B;fontFamily=Arial;fontSize=22;align=left;verticalAlign=top;spacing=28;" value="&lt;b&gt;CT: Complejidad Técnica&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#61707C&quot;&gt;Checklist técnico con bloques ponderados&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;table border=&quot;0&quot; cellpadding=&quot;6&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#176B87&quot;&gt;&lt;font color=&quot;#FFFFFF&quot;&gt;&lt;b&gt;H 25&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#2F8A5B&quot;&gt;&lt;font color=&quot;#FFFFFF&quot;&gt;&lt;b&gt;B 20&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#C9862D&quot;&gt;&lt;font color=&quot;#FFFFFF&quot;&gt;&lt;b&gt;D 15&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#6F5F90&quot;&gt;&lt;font color=&quot;#FFFFFF&quot;&gt;&lt;b&gt;G 12&lt;/b&gt;&lt;/font&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;br&gt;&lt;font style=&quot;font-family: Consolas; font-size: 22px;&quot;&gt;CT = Σ(score_bloque × peso)&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#61707C&quot;&gt;Resultado: CT continuo 0-100 y CT discreto 1-5&lt;/font&gt;" vertex="1">
+          <mxGeometry height="280" width="500" x="475" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="vec" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#DDECE4;strokeColor=#BFD7C9;fontColor=#15202B;fontFamily=Arial;fontSize=21;align=left;verticalAlign=top;spacing=28;" value="&lt;b&gt;VEC: Valor Esperado de Cotizar&lt;/b&gt;&lt;br&gt;&lt;font color=&quot;#61707C&quot;&gt;Integra probabilidad, impacto, margen y capacidad&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-family: Consolas; font-size: 24px;&quot;&gt;&lt;b&gt;VEC = P × I × M × F_C&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;br&gt;I = MIN(monto / máximo, 1)&lt;br&gt;M = margen esperado / margen objetivo&lt;br&gt;F_C = EXP(-α × horas / horas disponibles)" vertex="1">
+          <mxGeometry height="330" width="390" x="1020" y="132" as="geometry" />
+        </mxCell>
+        <mxCell id="8JGPw39PC9fJ3PLac3gb-10" edge="1" parent="1" source="time" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#C9862D;strokeWidth=4;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=block;" target="ip">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="time" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF8F1;strokeColor=#D9D0C3;fontColor=#15202B;fontFamily=Arial;fontSize=22;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Tiempo objetivo T′&lt;/b&gt;&lt;br&gt;&lt;br&gt;Tabla CT → rango de horas&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-family: Consolas; font-size: 22px;&quot;&gt;T′ = (h_min + h_max) / 2&lt;/font&gt;" vertex="1">
+          <mxGeometry height="235" width="310" x="560" y="860" as="geometry" />
+        </mxCell>
+        <mxCell id="8JGPw39PC9fJ3PLac3gb-12" edge="1" parent="1" source="ip" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#C9862D;strokeWidth=4;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=block;" target="decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ip" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FBF8F1;strokeColor=#D9D0C3;fontColor=#15202B;fontFamily=Arial;fontSize=22;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Prioridad IP&lt;/b&gt;&lt;br&gt;&lt;br&gt;Ordena proyectos elegibles&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-family: Consolas; font-size: 24px;&quot;&gt;IP = VEC / T′&lt;/font&gt;" vertex="1">
+          <mxGeometry height="225" width="300" x="910" y="865" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#111B24;strokeColor=#111B24;fontColor=#FFFAF2;fontFamily=Arial;fontSize=21;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Decisión final&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(151, 208, 119);&quot;&gt;&lt;br&gt;BID &lt;/font&gt;| &lt;font style=&quot;color: rgb(255, 255, 0);&quot;&gt;POSTERGAR &lt;/font&gt;| &lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;NO-BID&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(151, 208, 119);&quot;&gt;VEC ≥ 0,20 → BID&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(255, 255, 0);&quot;&gt;&lt;font&gt;0,08 ≤ VEC &amp;lt; 0,20 → POSTERGAR&lt;/font&gt;&lt;br&gt;&lt;/font&gt;&lt;font style=&quot;color: rgb(255, 0, 0);&quot;&gt;VEC &amp;lt; 0,08 → NO-BID&lt;/font&gt;" vertex="1">
+          <mxGeometry height="320" width="390" x="1270" y="817.5" as="geometry" />
+        </mxCell>
+        <mxCell id="8JGPw39PC9fJ3PLac3gb-11" edge="1" parent="1" source="matrix" style="edgeStyle=none;shape=connector;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.151;entryY=0.989;entryDx=0;entryDy=0;strokeColor=#C9862D;strokeWidth=4;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=11;fontColor=default;labelBackgroundColor=default;endArrow=block;entryPerimeter=0;" target="decision">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="985" y="1185" />
+              <mxPoint x="1329" y="1185" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="matrix" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#F3E7D5;strokeColor=#DFC39E;fontColor=#15202B;fontFamily=Arial;fontSize=21;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Matriz CT × VEC&lt;/b&gt;&lt;br&gt;&lt;br&gt;Capa de gobernanza: bloquea decisiones incoherentes.&lt;br&gt;&lt;br&gt;Si VEC = BID pero la matriz bloquea → revisión estratégica." vertex="1">
+          <mxGeometry height="260" width="490" x="650" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="gov" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#E8F0F2;strokeColor=#B8CCD2;fontColor=#15202B;fontFamily=Arial;fontSize=21;align=left;verticalAlign=top;spacing=26;" value="&lt;b&gt;Gobernanza técnica&lt;/b&gt;&lt;br&gt;&lt;br&gt;• PARAMETROS editables&lt;br&gt;• Macros VBA para exclusividad&lt;br&gt;• Formato condicional por decisión&lt;br&gt;• No multiplicar VERDADERO/FALSO directamente" vertex="1">
+          <mxGeometry height="250" width="520" x="10" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="e-input-ct" edge="1" parent="1" source="input" style="endArrow=block;html=1;rounded=0;strokeColor=#176B87;strokeWidth=4;" target="ct" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-core-ct" edge="1" parent="1" source="core" style="endArrow=block;html=1;rounded=0;strokeColor=#176B87;strokeWidth=4;" target="ct" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-prob-vec" edge="1" parent="1" source="prob" style="endArrow=block;html=1;rounded=0;strokeColor=#2F8A5B;strokeWidth=4;" target="vec" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-core-vec" edge="1" parent="1" source="core" style="endArrow=block;html=1;rounded=0;strokeColor=#2F8A5B;strokeWidth=4;" target="vec" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ct-time" edge="1" parent="1" source="ct" style="endArrow=block;html=1;rounded=0;strokeColor=#C9862D;strokeWidth=4;" target="time" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-vec-ip" edge="1" parent="1" source="vec" style="endArrow=block;html=1;rounded=0;strokeColor=#2F8A5B;strokeWidth=4;" target="ip" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-vec-decision" edge="1" parent="1" source="vec" style="endArrow=block;html=1;rounded=0;strokeColor=#2F8A5B;strokeWidth=4;entryX=0.114;entryY=-0.003;entryDx=0;entryDy=0;entryPerimeter=0;" target="decision" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

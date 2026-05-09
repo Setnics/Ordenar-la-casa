@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <style>
+      .bg { fill: #f6f1e7; }
+      .ink { fill: #15202b; }
+      .muted { fill: #61707c; }
+      .small { font: 400 22px Arial, sans-serif; }
+      .label { font: 700 22px Arial, sans-serif; }
+      .title { font: 700 42px Georgia, serif; }
+      .hero { font: 700 54px Georgia, serif; }
+      .formula { font: 700 24px Consolas, monospace; }
+      .node { fill: #fbf8f1; stroke: #d9d0c3; stroke-width: 2; }
+      .dark { fill: #111b24; }
+      .blue { fill: #176b87; }
+      .green { fill: #2f8a5b; }
+      .amber { fill: #c9862d; }
+      .red { fill: #b54a43; }
+      .purple { fill: #6f5f90; }
+      .softblue { fill: #e8f0f2; stroke: #b8ccd2; stroke-width: 2; }
+      .softgreen { fill: #ddece4; stroke: #bfd7c9; stroke-width: 2; }
+      .softamber { fill: #f3e7d5; stroke: #dfc39e; stroke-width: 2; }
+      .softred { fill: #f2dad6; stroke: #d7aca6; stroke-width: 2; }
+      .line { stroke: #9b8f80; stroke-width: 3; fill: none; }
+      .lineblue { stroke: #176b87; stroke-width: 4; fill: none; }
+      .linegreen { stroke: #2f8a5b; stroke-width: 4; fill: none; }
+      .lineamber { stroke: #c9862d; stroke-width: 4; fill: none; }
+      .white { fill: #fffaf2; }
+    </style>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M 0 0 L 14 7 L 0 14 z" fill="#9b8f80"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M 0 0 L 14 7 L 0 14 z" fill="#176b87"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M 0 0 L 14 7 L 0 14 z" fill="#2f8a5b"/>
+    </marker>
+    <marker id="arrowAmber" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M 0 0 L 14 7 L 0 14 z" fill="#c9862d"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1600" height="1000"/>
+
+  <text class="title ink" x="70" y="75">Mapa conceptual del proyecto</text>
+  <text class="small muted" x="70" y="112">Herramienta Excel CT-VEC-IP para evaluar, priorizar y decidir cotizaciones de ingenieria</text>
+
+  <rect class="dark" x="555" y="160" width="490" height="165"/>
+  <text class="hero white" x="605" y="225">CT-VEC-IP</text>
+  <text class="label white" x="605" y="270">Modelo de decision para cotizaciones</text>
+  <text class="small" fill="#c8d0d6" x="605" y="302">Complejidad tecnica + valor esperado + tiempo objetivo</text>
+
+  <rect class="softblue" x="70" y="170" width="340" height="118"/>
+  <text class="label ink" x="100" y="215">1. Complejidad</text>
+  <text class="small muted" x="100" y="250">Que tan complejo es cotizar?</text>
+
+  <rect class="softgreen" x="70" y="315" width="340" height="118"/>
+  <text class="label ink" x="100" y="360">2. Conveniencia</text>
+  <text class="small muted" x="100" y="395">Conviene cotizar por valor esperado?</text>
+
+  <rect class="softamber" x="70" y="460" width="340" height="118"/>
+  <text class="label ink" x="100" y="505">3. Prioridad</text>
+  <text class="small muted" x="100" y="540">Cual oportunidad va primero?</text>
+
+  <path class="line" marker-end="url(#arrow)" d="M410 230 C470 230 500 225 555 225"/>
+  <path class="line" marker-end="url(#arrow)" d="M410 374 C475 374 500 270 555 270"/>
+  <path class="line" marker-end="url(#arrow)" d="M410 520 C490 520 500 305 555 305"/>
+
+  <rect class="node" x="70" y="660" width="390" height="220"/>
+  <text class="label ink" x="100" y="710">Entradas del proyecto</text>
+  <circle class="blue" cx="108" cy="750" r="7"/><text class="small muted" x="130" y="758">Proyecto, cliente y monto</text>
+  <circle class="blue" cx="108" cy="790" r="7"/><text class="small muted" x="130" y="798">Margen objetivo / esperado</text>
+  <circle class="blue" cx="108" cy="830" r="7"/><text class="small muted" x="130" y="838">Horas estimadas o saturacion</text>
+  <text class="small muted" x="100" y="865">Hoja: INPUT_PROYECTO</text>
+
+  <rect class="node" x="550" y="420" width="500" height="245"/>
+  <text class="label ink" x="590" y="468">CT: Complejidad Tecnica</text>
+  <text class="small muted" x="590" y="505">Checklist tecnico con bloques ponderados</text>
+  <rect class="blue" x="590" y="535" width="80" height="42"/><text class="label white" x="612" y="564">H 25</text>
+  <rect class="green" x="690" y="535" width="80" height="42"/><text class="label white" x="712" y="564">B 20</text>
+  <rect class="amber" x="790" y="535" width="80" height="42"/><text class="label white" x="812" y="564">D 15</text>
+  <rect class="purple" x="890" y="535" width="80" height="42"/><text class="label white" x="912" y="564">G 12</text>
+  <rect class="node" x="590" y="600" width="420" height="42"/>
+  <text class="formula ink" x="612" y="629">CT = SUMA(score_bloque x peso)</text>
+  <text class="small muted" x="590" y="655">Resultado: CT continuo 0-100 y CT discreto 1-5</text>
+
+  <rect class="node" x="1135" y="390" width="390" height="305"/>
+  <text class="label ink" x="1165" y="438">VEC: Valor esperado</text>
+  <text class="small muted" x="1165" y="475">Integra probabilidad, impacto, margen y capacidad</text>
+  <rect class="softgreen" x="1165" y="510" width="320" height="58"/>
+  <text class="formula ink" x="1190" y="548">VEC = P x I x M x F_C</text>
+  <text class="small muted" x="1165" y="602">P = R x C x E</text>
+  <text class="small muted" x="1165" y="637">I = MIN(monto / maximo, 1)</text>
+  <text class="small muted" x="1165" y="672">F_C = EXP(-alpha x horas / horas_disp.)</text>
+
+  <path class="lineblue" marker-end="url(#arrowBlue)" d="M800 325 L800 420"/>
+  <path class="linegreen" marker-end="url(#arrowGreen)" d="M1045 245 C1150 245 1210 330 1260 390"/>
+  <path class="line" marker-end="url(#arrow)" d="M460 770 C520 730 535 620 550 565"/>
+
+  <rect class="node" x="550" y="735" width="310" height="130"/>
+  <text class="label ink" x="585" y="780">Tiempo objetivo T'</text>
+  <text class="small muted" x="585" y="817">Tabla CT -> rango de horas</text>
+  <text class="formula ink" x="585" y="850">T' = (h_min + h_max) / 2</text>
+
+  <rect class="node" x="910" y="735" width="300" height="130"/>
+  <text class="label ink" x="945" y="780">Prioridad IP</text>
+  <text class="small muted" x="945" y="817">Ordena proyectos elegibles</text>
+  <text class="formula ink" x="945" y="850">IP = VEC / T'</text>
+
+  <path class="lineamber" marker-end="url(#arrowAmber)" d="M800 665 C790 700 765 715 735 735"/>
+  <path class="linegreen" marker-end="url(#arrowGreen)" d="M1260 695 C1240 745 1205 790 1210 800"/>
+  <path class="line" marker-end="url(#arrow)" d="M860 800 L910 800"/>
+
+  <rect class="dark" x="1215" y="740" width="310" height="150"/>
+  <text class="label white" x="1245" y="785">Decision final</text>
+  <text class="small" fill="#c8d0d6" x="1245" y="825">BID | POSTERGAR | NO-BID</text>
+  <rect class="green" x="1245" y="850" width="70" height="28"/><text class="label white" x="1263" y="871">BID</text>
+  <rect class="amber" x="1330" y="850" width="112" height="28"/><text class="label white" x="1341" y="871">POST.</text>
+  <rect class="red" x="1456" y="850" width="55" height="28"/><text class="label white" x="1464" y="871">NO</text>
+
+  <rect class="node" x="1110" y="170" width="415" height="150"/>
+  <text class="label ink" x="1140" y="215">Gobernanza del modelo</text>
+  <text class="small muted" x="1140" y="250">Parametros editables: alpha, umbrales,</text>
+  <text class="small muted" x="1140" y="282">monto maximo, horas disponibles y cap M.</text>
+
+  <path class="line" marker-end="url(#arrow)" d="M1110 245 L1045 245"/>
+
+  <rect class="node" x="70" y="900" width="1455" height="54"/>
+  <text class="label ink" x="100" y="935">Idea central:</text>
+  <text class="small muted" x="245" y="935">La herramienta convierte criterios tecnicos y comerciales en una decision trazable, defendible y priorizable.</text>
+</svg>
