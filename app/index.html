@@ -519,7 +519,8 @@
 
   <div class="btn-row">
     <button class="btn btn-secondary" onclick="goTo(3)">← Anterior</button>
-    <div style="display:flex;gap:0.8rem">
+    <div class="result-actions">
+      <button class="btn btn-export" onclick="exportarCSV()">Exportar a Excel</button>
       <button class="btn btn-print" onclick="window.print()">🖨 Imprimir</button>
       <button class="btn btn-reset" onclick="resetAll()">↺ Nueva Evaluación</button>
     </div>

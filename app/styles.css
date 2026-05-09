@@ -356,6 +356,15 @@ select option { background: #1a2235; }
   background: rgba(0,212,255,0.08); color: var(--cyan);
   border: 1.5px solid var(--border-cyan); font-size: 0.82rem;
 }
+.btn-export {
+  background: rgba(0,230,118,0.08); color: var(--green);
+  border: 1.5px solid rgba(0,230,118,0.28); font-size: 0.82rem;
+}
+.btn-export:hover {
+  background: rgba(0,230,118,0.14);
+  border-color: var(--green);
+}
+.result-actions { display: flex; gap: 0.8rem; flex-wrap: wrap; justify-content: flex-end; }
 
 /* ── Sat disabled ── */
 .sat-disabled input, .sat-disabled select {

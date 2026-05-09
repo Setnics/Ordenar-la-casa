@@ -47,6 +47,7 @@ function buildParams(raw) {
 }
 
 let PARAMS = buildParams(PARAMS_RAW);
+let lastResults = null;
 
 // ── Navegación ──
 let currentStep = 1;
@@ -194,7 +195,8 @@ function calcularResultados() {
     matrizConflicto = (decMap[decision] !== matrizDecision);
   }
 
-  renderResultados({ CT, ctD, To, P, I, M, FC, VEC, IP, decision, modo, scores, pesos, matrizDecision, matrizConflicto });
+  lastResults = { CT, ctD, To, P, I, M, FC, VEC, IP, decision, modo, scores, pesos, matrizDecision, matrizConflicto };
+  renderResultados(lastResults);
 }
 
 // ── Render resultados ──
@@ -452,6 +454,106 @@ function resetAll() {
   goTo(1);
 }
 window.resetAll = resetAll;
+
+// Exporta una fila CSV para consolidar evaluaciones en Excel.
+function exportarCSV() {
+  if (currentStep !== 4 || !lastResults) calcularResultados();
+  const r = lastResults;
+  if (!r) {
+    alert('No hay resultados disponibles para exportar.');
+    return;
+  }
+
+  const decisionMap = {
+    bid: 'BID',
+    postpone: 'POSTERGAR',
+    nobid: 'NO-BID',
+    nodata: 'SIN DATOS',
+  };
+  const today = new Date();
+  const fechaISO = today.toISOString().slice(0, 10);
+  const fechaLocal = today.toLocaleString('es-CR');
+  const paramSource = localStorage.getItem('ct_vec_params') ? 'Personalizados' : 'Predeterminados';
+
+  const row = {
+    fecha_evaluacion: fechaLocal,
+    proyecto: state.proyecto || '',
+    cliente: state.cliente || '',
+    monto_usd: numberOrBlank(state.monto),
+    margen_objetivo_pct: numberOrBlank(state.margenObj),
+    margen_esperado_pct: numberOrBlank(state.margenEsp),
+    horas_estimadas: numberOrBlank(state.horas),
+    saturacion: state.saturacion || '',
+    modo_capacidad: r.modo,
+    decision_vec: decisionMap[r.decision] || r.decision,
+    decision_matriz_ct_vec: r.matrizDecision || '',
+    conflicto_matriz: r.matrizConflicto ? 'SI' : 'NO',
+    ct_continuo: fixedOrBlank(r.CT, 2),
+    ct_discreto: r.ctD,
+    tiempo_objetivo_horas: r.To,
+    probabilidad_p: fixedOrBlank(r.P, 4),
+    impacto_i: fixedOrBlank(r.I, 4),
+    margen_m: fixedOrBlank(r.M, 4),
+    factor_capacidad_fc: fixedOrBlank(r.FC, 4),
+    vec: fixedOrBlank(r.VEC, 4),
+    ip: fixedOrBlank(r.IP, 6),
+    prob_relacion_cliente: state.R || '',
+    prob_competencia: state.C || '',
+    prob_experiencia: state.E || '',
+    ct_H_urgencia_pct: fixedOrBlank(r.scores.H * 100, 1),
+    ct_B_alcance_pct: fixedOrBlank(r.scores.B * 100, 1),
+    ct_D_categorias_pct: fixedOrBlank(r.scores.D * 100, 1),
+    ct_G_referencias_pct: fixedOrBlank(r.scores.G * 100, 1),
+    ct_E_subcontratos_pct: fixedOrBlank(r.scores.E * 100, 1),
+    ct_A_disciplinas_pct: fixedOrBlank(r.scores.A * 100, 1),
+    ct_C_ingenieria_pct: fixedOrBlank(r.scores.C * 100, 1),
+    ct_F_permisos_pct: fixedOrBlank(r.scores.F * 100, 1),
+    parametros: paramSource,
+    param_alpha: PARAMS_RAW.alpha,
+    param_horas_disponibles: PARAMS_RAW.horasDisp,
+    param_monto_max_usd: PARAMS_RAW.montoMax,
+    param_umbral_bid: PARAMS_RAW.umbralBID,
+    param_umbral_postergar: PARAMS_RAW.umbralPOSTERGAR,
+  };
+
+  const headers = Object.keys(row);
+  const csv = '\uFEFF' + headers.join(',') + '\r\n' + headers.map(h => csvCell(row[h])).join(',');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const projectSlug = slugify(state.proyecto || 'proyecto');
+  link.href = url;
+  link.download = `evaluacion_CT_VEC_IP_${projectSlug}_${fechaISO}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+window.exportarCSV = exportarCSV;
+
+function fixedOrBlank(value, digits) {
+  return value === null || value === undefined || Number.isNaN(value) ? '' : Number(value).toFixed(digits);
+}
+
+function numberOrBlank(value) {
+  const n = parseFloat(value);
+  return value === '' || Number.isNaN(n) ? '' : n;
+}
+
+function csvCell(value) {
+  const text = String(value ?? '');
+  return `"${text.replace(/"/g, '""')}"`;
+}
+
+function slugify(value) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 48)
+    .toLowerCase() || 'proyecto';
+}
 
 // ── Parámetros: populate form ──
 function populateParamsForm() {
